@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import userAxios from '../../../Axios/UserAxios';
+import axiosInstance from '../../../Axios/UserAxios';
 
 const SignUp = () => {
   const [username, setusername] = useState('');
@@ -17,6 +17,7 @@ const SignUp = () => {
     emailinput = useRef(null),
     phoneInput = useRef(null);
   const navigate = useNavigate(null);
+  const userAxios = axiosInstance()
   const backgroundImage = {
     backgroundImage: "url(../../../../public/images//wallpaper.jpg)",
     backgroundSize: 'cover',
