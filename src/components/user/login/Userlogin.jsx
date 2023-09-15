@@ -36,7 +36,7 @@ const Userlogin = () => {
     }, [])
     const navigate = useNavigate(null)
     const backgroundImage = {
-        backgroundImage: "url(../../../../public/images//wallpaper.jpg)",
+        backgroundImage: "url(/images//wallpaper.jpg)",
         backgroundSize: 'cover',
         backgroundPosition: 'center'
     }
