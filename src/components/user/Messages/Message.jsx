@@ -21,7 +21,7 @@ const Message = () => {
     }
 
     useEffect(() => {
-        const newSocket = io("http://localhost:3000/");
+        const newSocket = io("https://api.creato.fun/");
         setSocket(newSocket);
 
         return () => {
