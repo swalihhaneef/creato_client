@@ -211,8 +211,8 @@ const Message = () => {
                                                         <div class="mr-auto text-sm text-black dark:text-white font-medium">{getSender(id, item.users).username}</div>
                                                         <div class="text-xs font-light text-gray-500 dark:text-white/70">09:40AM</div>
                                                     </div>
-                                                    <div class="font-medium overflow-hidden text-ellipsis text-sm whitespace-nowrap">{item.latestMessage.content ?
-                                                    item.latestMessage.content:'' }</div>
+                                                    {/* <div class="font-medium overflow-hidden text-ellipsis text-sm whitespace-nowrap">{item.latestMessage.content ?
+                                                    item.latestMessage.content:'' }</div> */}
                                                 </div>
                                             </a>
                                         )
