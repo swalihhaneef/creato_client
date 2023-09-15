@@ -26,6 +26,7 @@ const Shop = () => {
     const userAxios = axiosInstance()
     useEffect(() => {
         userAxios.get('/products').then((res) => {
+            console.log(res.data.filteredProducts);
             Setproducts(res.data.filteredProducts);
         }).catch((err) => {
             console.log(err);
@@ -139,7 +140,8 @@ const Shop = () => {
                             <div className="grid xl:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-3 mt-2" uk-scrollspy="target: > div; cls: uk-animation-slide-bottom-small; delay: 100">
 
                                 {/* <!-- single item --> */}
-                                {product.map((item) => {
+
+                                {product.length > 0 ?product.map((item) => {
                                     return (
                                         <div>
                                             <div onClick={() => setShowModalXL(true)} className="group" uk-toggle="">
@@ -233,7 +235,7 @@ const Shop = () => {
                                             </TEModal>
                                         </div>
                                     )
-                                })}
+                                }):''}
 
 
 
