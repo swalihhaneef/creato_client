@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import axiosInstance from '../../../Axios/UserAxios'
 import { useSelector } from 'react-redux'
@@ -11,11 +11,14 @@ const Message = () => {
     const chatid = searchParams.get('id')
     const [messages, setMessages] = useState([])
     const [newMessage, setNewMessage] = useState()
-
     const [socket, setSocket] = useState(null);
     const [chatId, setChatID] = useState('')
     const navigate = useNavigate(null)
     const userAxios = axiosInstance()
+    const lastMessageRef = useRef(null)
+    if(lastMessageRef.current){
+        lastMessageRef.current.scrollIntoView({behavior:'smooth'})
+    }
     if (chatid && chatId == '') {
         setChatID(chatid)
     }
@@ -50,34 +53,11 @@ const Message = () => {
 
     const [chat, setChat] = useState([])
     const [allChat, setAllchat] = useState([])
-    // const [chatId, setChatID] = useState('')
-    // const [socketConnection, setsocketConnection] = useState(false)
-    // const [socketCon, setSocketCon] = useState(null)
+    
     const { Token, id } = useSelector((state) => state.Client)
-    // const EndPoint = 'http://localhost:3000'
+  
     let selectedChat
-    // if (chatid && chatId == '') {
-    //     setChatID(chatid)
-    // }
-    // useEffect(() => {
-    //     socket = io(EndPoint)
-    //     socket.emit('setup', id)
-    //     socket.on('connection', () => {setsocketConnection(true)
-    //         setSocketCon(socket)
-    //     })
-    //     if (chatId) {
-    //         console.log(chatId);
-    //         socket.emit('join chat', chatId)
-    //     }
-
-    // }, [chatId])
-    // useEffect(() => {
-    //     if (socket) {
-    //         socket.on('message recieved', (newMessageRecieved) => {
-    //             setMessages([...messages, newMessageRecieved])
-    //         })
-    //     }
-    // }, [socket])
+    
 
     const fetchChat = async () => {
         if (!chatId) return
@@ -288,9 +268,9 @@ const Message = () => {
 
                                             <button>Start Messaging</button>
                                         </div> : <>
-                                            {messages.map((item) => {
+                                            {messages.map((item,index) => {
                                                 return (
-                                                    <>
+                                                    <div key={index} ref={index === messages.length - 1 ? lastMessageRef : null }>
                                                         {/* <div class="flex justify-center ">
                                                             <div class="font-medium text-gray-500 text-sm dark:text-white/70">
                                                                 April 8,2023,6:30 AM
@@ -310,7 +290,7 @@ const Message = () => {
                                                                     : <RxAvatar className='w-9 h-9 rounded-full' style={{ color: 'white', backgroundColor: 'darkgray' }} />}
                                                                 <div class="px-4 py-2 rounded-[20px] max-w-sm bg-secondery"> {item.content} </div>
                                                             </div>}
-                                                    </>
+                                                    </div>
 
                                                 )
                                             })}

@@ -2,11 +2,8 @@ import React, { useState, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import axiosInstance from '../../../Axios/UserAxios'
 import { useNavigate } from 'react-router-dom'
-
 import {  commentIcon } from '../../../assets/icons/icons'
 import { FcLike, FcLikePlaceholder } from 'react-icons/fc'
-
-
 import { SlOptionsVertical } from 'react-icons/sl'
 import { TERipple, TEModal, TEModalDialog, TEModalContent, TEModalHeader, TEModalBody, } from "tw-elements-react";
 import { RxAvatar } from 'react-icons/rx'
@@ -21,7 +18,6 @@ const Home = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [success, setSuccess] = useState()
     const [products, setProducts] = useState([])
-   
     const [moreComments, setMorecomments] = useState(false)
     const [comment, setComment] = useState('')
     const [openCommentId, setOpenCommentId] = useState(null);
@@ -30,16 +26,19 @@ const Home = () => {
     const [sugg, Setsugg] = useState([])
     const [follow, setFollow] = useState(false)
     const [showModalSm, setShowModalSm] = useState(false);
+    const [loading,Setloading] = useState(true)
    
     console.log(user, 'aksdbfuoasgfuo');
   
 
-    const textareaRef = useRef(null);
+    const textareaRefs = useRef([]);
     const userAxios = axiosInstance()
-    const handleCommentButtonClick = () => {
-        if (textareaRef.current) {
-            textareaRef.current.scrollIntoView({ behavior: 'smooth' });
-            textareaRef.current.focus();
+    const handleCommentButtonClick = (index) => {
+        const textareaRef = textareaRefs.current[index]
+        if (textareaRef) {
+            console.log(textareaRef);
+            textareaRef.scrollIntoView({ behavior: 'smooth' ,block: 'end' });
+            textareaRef.focus();
         }
     };
 
@@ -55,6 +54,8 @@ const Home = () => {
                     setPost(posts)
                     let pros = res.data.products
                     setProducts(pros)
+                    Setloading(false)
+                    textareaRefs.current = new Array(posts.length).fill(null);
                 }
             }).catch((error) => {
                 console.log(error);
@@ -131,7 +132,7 @@ const Home = () => {
             const response = await userAxios.patch('/savePost', { postid, id })
             if (response.data.success) {
                 console.log(response.data.saved);
-                seState(response.data.saved)
+                setState(response.data.saved)
             }
         } catch (error) {
             toast.error(error)
@@ -147,6 +148,7 @@ const Home = () => {
     //      })
       
     // }
+   
     return (
         <>
             <main className="2xl:ml-[--w-side] xl:ml-[--w-side-md] md:ml-[--w-side-small]">
@@ -208,13 +210,14 @@ const Home = () => {
 
 
 
-                        <div className="md:max-w-[510px] mx-auto flex-1 xl:space-y-6 space-y-3">
+                      {loading ==true ? '' 
+                      :  <div className="md:max-w-[510px] mx-auto flex-1 xl:space-y-6 space-y-3">
 
 
 
                           
 
-                            {post.map((item) => {
+                            {post.map((item,index) => {
                                 return (
                                     <div className="bg-white rounded-xl shadow-sm text-sm font-medium border1 dark:bg-dark2">
 
@@ -229,7 +232,7 @@ const Home = () => {
                                             </a>
                                             <div className="flex-1">
                                                 <a href="profile.html"> <h4 className="text-black dark:text-white"> {item.userId.username} </h4> </a>
-                                                <div className="text-xs text-gray-500 dark:text-white/80"> 2 hours ago</div>
+                                                <div className="text-xs text-gray-500 dark:text-white/80"> {item.time}</div>
                                             </div>
 
                                             <div className="-mr-1 relative">
@@ -342,7 +345,7 @@ const Home = () => {
                                             </div>
                                             <div className="flex items-center gap-3">
                                                 <button className="text-center text-neutral-900 text-[10px] font-normal" type="button"
-                                                    onClick={handleCommentButtonClick} >{commentIcon} </button>
+                                                    onClick={()=>handleCommentButtonClick(index)} >{commentIcon} </button>
                                                 <span>{item.comment.length > 0 ? item.comment.length : ''}</span>
                                             </div>
 
@@ -530,7 +533,7 @@ const Home = () => {
 
                                             <div className="flex-1 relative overflow-hidden h-10">
                                                 <textarea placeholder="Add Comment...."
-                                                    ref={textareaRef}
+                                                    ref={(el)=>(textareaRefs.current[index]=el)}
                                                     value={comment}
                                                     onChange={(e) => setComment(e.target.value)}
                                                     rows="1" className="w-full resize-none !bg-transparent px-4 py-2 focus:!border-transparent focus:!ring-transparent">
@@ -548,7 +551,7 @@ const Home = () => {
 
 
 
-                        </div>
+                        </div>}
 
 
 
@@ -614,7 +617,7 @@ const Home = () => {
                                                     return (
                                                         <li className="w-1/2 pr-2">
 
-                                                            <a href="#">
+                                                            <a onClick={()=>navigate(`/shop?id=${item._id}`)}>
                                                                 <div className="relative overflow-hidden rounded-lg">
                                                                     <div className="relative w-full md:h-40 h-full">
                                                                         <img src={item.post} alt="" className="object-cover w-full h-full inset-0" />

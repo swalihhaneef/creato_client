@@ -86,7 +86,7 @@ const Sidebar = () => {
                 <div id="sidebar__inner" class=" sside md:flex-col justify-between md:h-screen md:p-2 p-1 transition-all duration-500 bg-white shadow dark:bg-dark2 2xl:w-72 xl:w-60 max-xl:w-[73px] max-md:w-screen max-md:border-t max-md:dark:border-slate-700">
 
 
-                    <div className=" h-20 px-2  max-md:fixed max-md:top-0 max-md:w-full max-md:bg-white/80 max-md:left-0 max-md:px-4 max-md:h-14 max-md:shadow-sm max-md:dark:bg-slate-900/80 backdrop-blur-xl">
+                    <div className=" h-20 px-2 flex items-center  max-md:fixed max-md:top-0 max-md:w-full max-md:bg-white/80 max-md:left-0 max-md:px-4 max-md:h-14 max-md:shadow-sm max-md:dark:bg-slate-900/80 backdrop-blur-xl">
                         <div className='flex w-full'>
 
                             <div className="w-full flex items-center justify-center ">
@@ -157,10 +157,10 @@ const Sidebar = () => {
                         </a>
                         <a onClick={() => navigate('/messages')} class="max-md:!fixed max-md:top-2 max-md:right-2">
                             {icon == true ?
-                                // <svg id="icon__outline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                //     <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
-                                // </svg>
-                                ""
+                                    <svg id="icon__outline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+                                    </svg>
+                               
                                 :
                                 <>
                                     <svg id="icon__outline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -192,7 +192,7 @@ const Sidebar = () => {
 
                         </a>
                         {showNotification &&
-                            <div class="sm:w-[397px] w- absolute top-0  bg-white shadow-lg md:!left-[73px]   dark:bg-dark2 dark:border1 max-md:bottom-[57px]" >
+                            <div class="sm:w-[397px] w- absolute top-0  bg-white shadow-lg md:!left-[73px] z-50  dark:bg-dark2 dark:border1 max-md:bottom-[57px]" >
                                 <div className="md:h-screen overflow-y-auto h-[calc(100vh-120px)]">
 
 
@@ -220,7 +220,11 @@ const Sidebar = () => {
                                                 item.content == 'follow' ?
                                                     <a href="#" class="relative flex items-center gap-3 p-2 duration-200 rounded-xl pr-10 hover:bg-secondery bg-teal-500/5">
                                                         <div class="relative w-12 h-12 shrink-0">
+                                                            {item.userId.profilePic? 
                                                             <img src={item.userId.profilePic} alt="" class="object-cover w-full h-full rounded-full" />
+                                                        :
+                                                            <RxAvatar className='w-14 h-14 rounded-full' style={{ color: 'white', backgroundColor: 'darkgray' }} />
+                                                        }
                                                         </div>
                                                         <div class="flex-1 ">
                                                             <p> <b class="font-bold mr-1"> {item.userId.username}</b> started following you.  </p>
@@ -230,7 +234,11 @@ const Sidebar = () => {
                                                     </a> : item.content == 'like' ?
                                                         <a href="#" class="relative flex items-center gap-3 p-2 duration-200 rounded-xl pr-10 hover:bg-secondery bg-teal-500/5">
                                                             <div class="relative w-12 h-12 shrink-0">
-                                                                <img src={item.userId.profilePic} alt="" class="object-cover w-full h-full rounded-full" />
+                                                            {item.userId.profilePic? 
+                                                            <img src={item.userId.profilePic} alt="" class="object-cover w-full h-full rounded-full" />
+                                                        :
+                                                            <RxAvatar className='w-14 h-14 rounded-full' style={{ color: 'white', backgroundColor: 'darkgray' }} />
+                                                        }
                                                             </div>
                                                             <div class="flex-1 ">
 

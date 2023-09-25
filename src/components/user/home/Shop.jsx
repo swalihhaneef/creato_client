@@ -12,6 +12,7 @@ import {
 } from "tw-elements-react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import { useLocation } from "react-router-dom";
 const Shop = () => {
     const [counter, setCounter] = useState(0)
     const [showModal, setShowModal] = useState(false);
@@ -23,7 +24,17 @@ const Shop = () => {
     const [product, Setproducts] = useState([])
     const { Token } = useSelector((state) => state.Client)
     const [showModalXL, setShowModalXL] = useState(false);
+    const [showQueryModal, setShowQueryModal] = useState(false)
     const userAxios = axiosInstance()
+    const location = useLocation()
+    const searchParams = new URLSearchParams(location.search)
+    const [productId, setProductId] = useState('')
+    const product_id = searchParams.get('id')
+    useEffect(() => {
+        if (product_id) {
+            setShowQueryModal(true);
+        }
+    }, [product_id, setShowQueryModal]);
     useEffect(() => {
         userAxios.get('/products').then((res) => {
             console.log(res.data.filteredProducts);
@@ -126,9 +137,18 @@ const Shop = () => {
                                 <div className="py-6 overflow-hidden uk-slider-container">
 
                                     <ul className="uk-slider-items w-[calc(100%+0.10px)] capitalize text-sm font-semibold">
-                                        <li className="w-auto pr-2.5"> <a href="#" className="px-4 py-2 rounded-lg bg-slate-200 inline-block hover:shadow dark:bg-dark2"> Furniture </a> </li>
-                                        <li className="w-auto pr-2.5"> <a href="#" className="px-4 py-2 rounded-lg bg-slate-200 inline-block hover:shadow dark:bg-dark2"> Home decors </a> </li>
-                                        <li className="w-auto pr-2.5"> <a href="#" className="px-4 py-2 rounded-lg bg-slate-200 inline-block hover:shadow dark:bg-dark2"> Tools </a> </li>
+                                        <li className="w-auto pr-2.5">
+                                            <a onClick={()=> setCategory('all')} className="px-4 py-2 rounded-lg bg-slate-200 inline-block hover:shadow dark:bg-dark2"> all </a>
+                                        </li>
+                                        <li className="w-auto pr-2.5">
+                                            <a onClick={()=> setCategory('Furniture')} className="px-4 py-2 rounded-lg bg-slate-200 inline-block hover:shadow dark:bg-dark2"> Furniture </a>
+                                        </li>
+                                        <li className="w-auto pr-2.5">
+                                            <a onClick={()=> setCategory('Home decors')} className="px-4 py-2 rounded-lg bg-slate-200 inline-block hover:shadow dark:bg-dark2"> Home decors </a>
+                                        </li>
+                                        <li className="w-auto pr-2.5">
+                                            <a onClick={()=> setCategory('Tools')} className="px-4 py-2 rounded-lg bg-slate-200 inline-block hover:shadow dark:bg-dark2"> Tools </a>
+                                        </li>
                                     </ul>
 
                                 </div>
@@ -141,10 +161,11 @@ const Shop = () => {
 
                                 {/* <!-- single item --> */}
 
-                                {product.length > 0 ?product.map((item) => {
+                                {product.length > 0 ? product.map((item) => {
                                     return (
+                                        category == '' || 'all' ?
                                         <div>
-                                            <div onClick={() => setShowModalXL(true)} className="group" uk-toggle="">
+                                            <div onClick={() => { setShowModalXL(true), setProductId(item._id) }} className="group" uk-toggle="">
                                                 <div className="relative overflow-hidden rounded-lg">
                                                     <div className="relative w-full md:h-60 h-56 transition-all group-hover:scale-110 duration-300">
                                                         <img src={item.post} alt="" className="object-cover w-full h-full inset-0" />
@@ -156,7 +177,7 @@ const Shop = () => {
                                                 <h4 className="text-black lg:font-medium mb-0.5 dark:text-white"> {item.title} </h4>
                                                 <p className="md:text-sm text-xs lg:font-medium text-gray-500 dark:text-white"> by <a href="profile.html"> {item.userId.username} </a> </p>
                                             </div>
-                                            <TEModal show={showModalXL} setShow={setShowModalXL}>
+                                            {productId == item._id ? <TEModal show={showModalXL} setShow={setShowModalXL}>
                                                 <TEModalDialog size="xl">
                                                     <TEModalContent>
 
@@ -232,10 +253,11 @@ const Shop = () => {
                                                         </TEModalBody>
                                                     </TEModalContent>
                                                 </TEModalDialog>
-                                            </TEModal>
+                                            </TEModal> : ''}
                                         </div>
+                                    :''
                                     )
-                                }):''}
+                                }) : ''}
 
 
 
@@ -266,6 +288,92 @@ const Shop = () => {
 
 
             </main>
+            {showQueryModal &&
+                <TEModal show={showQueryModal} setShow={setShowQueryModal}>
+                    <TEModalDialog size="xl">
+                        <TEModalContent>
+
+                            {/* <!--Modal body--> */}
+                            <TEModalBody>
+                                <div id="product_moda" uk-modal="">
+                                    {product.length > 0 ?
+                                        product.map((item) => {
+                                            return (
+                                                item._id == product_id ?
+                                                    <div class=" relative mx-auto overflow-hidden shadow-xl rounded-lg lg:flex items-center ax-w-[86rem] w-full lg:h-[80vh]">
+
+                                                        <div class="lg:h-full lg:w-[calc(100vw-400px)] w-full h-96 flex justify-center items-center relative">
+
+                                                            <div class="relative z-10 w-full h-full">
+                                                                <img src={item.post} alt="" class="w-full h-full object-cover absolute" />
+                                                            </div>
+
+                                                            <button onClick={() => setShowQueryModal(false)} type="button" class="bg-white rounded-full p-2 absolute right-0 top-0 m-3 uk-animation-slide-right-medium z-10 dark:bg-slate-600 uk-modal-close">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                                                </svg>
+                                                            </button>
+
+                                                        </div>
+
+                                                        <div class="lg:w-[400px] w-full bg-white h-full relative overflow-y-auto shadow-xl dark:bg-dark2">
+
+                                                            <div class="p-6">
+
+                                                                <div class="flex absolute right-2.5 top-4 text-black gap-1">
+                                                                    <button class="w-8 h-8 hover:bg-slate-100 rounded-full grid place-items-center"> <ion-icon class="text-xl" uk-tooltip="title: Share; pos: top; offset: 6" name="share-outline"></ion-icon> </button>
+                                                                    <button class="w-8 h-8 hover:bg-slate-100 rounded-full grid place-items-center"> <ion-icon class="text-xl" uk-tooltip="title: Save; pos: top; offset: 6" name="bookmarks-outline"></ion-icon> </button>
+                                                                </div>
+
+                                                                <div>
+                                                                    <div class="text-lg font-semibold text-black dark:text-white"> {item.title} </div>
+                                                                    <p class="font-normal text-sm leading-6 mt-3">{item.discription}</p>
+                                                                </div>
+
+                                                                <div class="grid grid-cols-2 gap-y-5 gap-3 text-xs font-medium mt-5">
+                                                                    <div class="col-span-2 p-3 bg-slate-100 rounded-md space-y-1.5 border">
+                                                                        <div> Price</div>
+                                                                        <div class="text-3xl font-semibold text-black">{item.price}</div>
+                                                                    </div>
+
+                                                                </div>
+
+                                                                <div class="space-y-2 text-sm mt-7">
+                                                                    <div class="flex items-center gap-3">
+                                                                        <ion-icon class="text-xl" name="tag-outline"></ion-icon>
+                                                                        <div class="flex-1">{item.category}  </div>
+                                                                    </div>
+                                                                    <div class="flex items-center gap-3"> <ion-icon class="text-xl" name="navigate-circle-outline"></ion-icon> <div class="flex-1"> Published   4 days ago  </div> </div>
+                                                                </div>
+
+                                                                <div class="font-medium mt-6 space-y-3">
+                                                                    <div class="text-sm"> Seller </div>
+                                                                    <a href="#" class="flex items-center gap-3 mb-4 mt-1">
+                                                                        <div class="relative w-8 h-8 shrink-0">
+                                                                            <img src={item.userId.profilePic} alt="" class="object-cover w-full h-full rounded-full" /></div>
+                                                                        <div class="flex-1 min-w-0">
+                                                                            <div class="text-sm font-medium text-black dark:text-white">{item.userId.username}</div>
+                                                                        </div>
+                                                                        <button type="button" class="text-sm rounded-full py-1.5 px-4 font-semibold bg-secondery"> Chat </button>
+                                                                    </a>
+                                                                </div>
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                    : ''
+                                            )
+                                        }) : ""}
+
+
+
+                                </div>
+                            </TEModalBody>
+                        </TEModalContent>
+                    </TEModalDialog>
+                </TEModal>}
             <button type="button" class="fixed bottom-0 right-0 m-10" onClick={() => { setShowModal(true); setCounter(1) }}>
                 <div class="flex items-center justify-center w-14 h-14 bg-sky-500 rounded-full">
                     <AiOutlinePlus className="text-white text-3xl" />
